@@ -1,0 +1,19 @@
+# Build artifacts
+initramfs.cpio.gz
+rootfs_build/
+modules_install/
+
+# Kernel build output
+kernel/linux-*/
+kernel/*.tar.*
+kernel/modules_install/
+
+# Object files
+*.o
+*.a
+*.so
+
+# Editor files
+*.swp
+*.tmp
+.DS_Store

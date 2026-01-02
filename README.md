@@ -1,11 +1,23 @@
-Custom Linux-Based Operating System
-Overview
+# Custom Linux-Based Operating System
 
-This project implements a minimal Linux-based operating system built from source. The system focuses on low-level operating system concepts including kernel configuration, process initialization, filesystem mounting, and userland execution without relying on systemd or full GNU userland utilities.
+A minimal Linux-based operating system built from source to explore low-level operating system concepts such as kernel configuration, process initialization, filesystem mounting, and userland execution.
 
-The OS boots in a virtualized environment using QEMU and operates entirely from an initramfs-based root filesystem.
+This project intentionally avoids `systemd` and full GNU userland utilities to maintain transparency and control over the OS boot and execution pipeline.
 
-System Architecture
+---
+
+## 🚀 Overview
+
+The operating system boots inside a **QEMU virtual machine** using a **custom-compiled Linux kernel** and an **initramfs-based root filesystem**.  
+A custom init process runs as **PID 1**, mounts essential virtual filesystems, and supervises user processes through a minimal shell.
+
+The project focuses on **understanding OS internals**, not on providing a full-featured Linux distribution.
+
+---
+
+## 🧱 System Architecture
+
+
 QEMU Virtual Machine
         ↓
 Custom Linux Kernel (v6.6.x)
@@ -16,58 +28,101 @@ Minimal Shell
         ↓
 User Programs
 
-Boot Flow
 
-Custom Linux kernel is compiled with required subsystems enabled.
+---
 
-Kernel boots using an initramfs root filesystem.
+## 🔁 Boot Flow
 
-Kernel launches a custom init process as PID 1.
+1. Linux kernel is compiled from source with required subsystems enabled.
+2. Kernel boots inside QEMU using an initramfs root filesystem.
+3. Kernel launches a custom init process as PID 1.
+4. Init mounts `/proc`, `/sys`, `/dev`, and `/tmp`.
+5. Init spawns and supervises a minimal shell.
+6. Shell provides user interaction and process execution.
 
-Init mounts virtual filesystems and supervises child processes.
+---
 
-Shell provides user interaction and process execution.
+## ✨ Key Features
 
-Key Features
+- Custom init system running as **PID 1**
+- Minimal statically linked shell written in C
+- Manual filesystem mounting (`/proc`, `/sys`, `/dev`, `/tmp`)
+- Process supervision and signal handling (`SIGCHLD`)
+- Process inspection using the `/proc` filesystem
+- Kernel configured with DRM/KMS and input subsystems
+- Reproducible QEMU-based boot pipeline
 
-Custom init system running as PID 1
+---
 
-Minimal statically linked shell
+## 🧠 What I Implemented vs What Linux Provides
 
-Manual filesystem mounting (/proc, /sys, /dev)
+| Component | Implemented in Project | Provided by Kernel |
+|--------|----------------------|------------------|
+| Kernel compilation & config | ✅ | |
+| Init system (PID 1) | ✅ | |
+| Shell | ✅ | |
+| Filesystem mounting | ✅ | |
+| Process supervision | ✅ | |
+| Scheduling & VM | | ✅ |
+| Device drivers | | ✅ |
 
-Process supervision and signal handling
+---
 
-Kernel built with DRM/KMS and input support enabled
+## 🛠️ Technologies Used
 
-Clean, reproducible QEMU boot pipeline
+- **Language:** C  
+- **Kernel:** Linux 6.6.x  
+- **Virtualization:** QEMU  
+- **Build Tools:** GCC, Make  
+- **Filesystem:** initramfs  
 
-Technologies Used
+---
 
-Language: C
+## 🧪 Testing & Validation
 
-Kernel: Linux 6.6.x
+The system was tested inside QEMU by:
 
-Virtualization: QEMU
+- Verifying the custom init process runs as PID 1
+- Inspecting kernel threads and processes via `/proc`
+- Confirming correct shell execution and respawn behavior
+- Debugging early kernel panics related to VFS root mounting
 
-Build Tools: GCC, Make
+---
 
-Filesystem: initramfs
+## 📌 Design Decisions
 
-Learning Outcomes
+- Full GNU userland utilities are excluded intentionally
+- Only explicitly implemented binaries are available
+- Static linking ensures minimal runtime dependencies
+- Simplicity and clarity are prioritized over feature completeness
 
-Understanding of Linux boot internals
+---
 
-Hands-on experience with process management
+## 🚧 Limitations
 
-Exposure to kernel–userland boundaries
+- No persistent storage support
+- Graphics support is kernel-enabled but not exercised in userland
+- Minimal shell functionality by design
 
-Foundation for advanced OS and systems research
+---
 
-Future Work
+## 🔮 Future Enhancements
 
-Custom memory allocator
+- Custom userland memory allocator
+- Direct framebuffer rendering using DRM/KMS
+- Asynchronous input handling
+- Security and sandboxing experiments
 
-Direct framebuffer rendering using DRM
+---
 
-Asynchronous input handling
+## 🎓 Academic Relevance
+
+This project demonstrates practical experience with:
+
+- Linux boot internals
+- Kernel–userland boundaries
+- Process lifecycle management
+- Low-level systems programming
+
+It serves as a strong foundation for advanced coursework and research in **Operating Systems**, **Systems Programming**, and **Computer Science**.
+
